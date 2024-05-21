@@ -1,8 +1,17 @@
+import javax.swing.text.Document;
+
+import dao.ProductsDAO;
 import database.PolyBayDatabase;
+import model.Product;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        PolyBayDatabase db = new PolyBayDatabase("127.0.0.1", 3306, "poly_bay", "root", "");
+        ProductsDAO db = new ProductsDAO();
+        var products = db.findAll();
+        for(Product p : products)
+        {
+            System.out.println(p.name());
+        }
 
     }
 }
