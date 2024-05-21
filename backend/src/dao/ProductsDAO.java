@@ -18,7 +18,7 @@ public class ProductsDAO {
         }
         catch(SQLException e)
         {
-            
+            System.err.println(e);
         }
     }
 

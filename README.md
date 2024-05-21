@@ -91,7 +91,80 @@ Ce n'est pas la première fois que j'ai cette erreur. La dernière fois que c'es
 
 C'est de ce problème dont je vous avais parlé en CM. La dernière fois, M.Chassel m'avais fais changer la version de Java pour tester mais l'erreur changeais juste. Pour l'instant, je vais simplement finir l'initialisation du projet pour avoir une base. J'essayerais par la suite de régler le problème...
 
+## DAO
+
+Ajout de la classe `ProductsDAO` dans le dossier dao :
+
+```java
+public class ProductsDAO {
+    
+    PolyBayDatabase pbDatabase;
+
+    public ProductsDAO(){
+        try{
+            this.pbDatabase = new PolyBayDatabase();
+        }
+        catch(SQLException e)
+        {
+            System.err.println(e);
+        }
+    }
+
+    public ArrayList<Product> findAll() throws SQLException{
+        PreparedStatement ps = this.pbDatabase.prepareStatement("SELECT * FROM product ORDER BY name");
+        ResultSet results = ps.executeQuery();
+        ArrayList<Product> products = new ArrayList<Product>();
+        while (results.next()) {
+            products.add(generateProductFromResultSet(results));
+        }
+        return products;
+    }
+
+    private Product generateProductFromResultSet(ResultSet results) throws SQLException {
+        final int id = results.getInt("id");
+        final String name = results.getString("name");
+        final String owner = results.getString("owner");
+        final float bid = results.getFloat("price");
+        return new Product(id, name, owner, bid);
+    }
+}
+```
+
+Du fait du non fonctionnement de l'import de la librairie JDBC, ce main ne marche pas (j'ai demandé à un camarade vérification de ce code pour être sur qu'il fonctionne).
+
 ## MODELE
 
+Ajout du record `Product` :
 
+```java
+package model;
 
+public record Product(
+    int id,
+    String name,
+    String owner,
+    float bid
+){}
+
+```
+
+Et changement du main de `App` :
+
+```java
+import dao.ProductsDAO;
+import model.Product;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        ProductsDAO db = new ProductsDAO();
+        var products = db.findAll();
+        for(Product p : products)
+        {
+            System.out.println(p.name());
+        }
+
+    }
+}
+```
+
+Comme pour la partie dao, je ne peux pas tester ce main, et j'ai ici aussi demandé à un camarade vérification du code.
