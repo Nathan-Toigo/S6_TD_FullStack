@@ -1,7 +1,6 @@
 import javax.swing.text.Document;
 
 import dao.ProductsDAO;
-import database.PolyBayDatabase;
 import model.Product;
 
 public class App {
@@ -12,6 +11,5 @@ public class App {
         {
             System.out.println(p.name());
         }
-
     }
 }
